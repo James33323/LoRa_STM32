@@ -69,7 +69,7 @@
 /*!
  * Default datarate used by the node
  */
-#define AU915_DEFAULT_DATARATE                      DR_2
+#define AU915_DEFAULT_DATARATE                      DR_4
 
 /*!
  * Minimal Rx1 receive datarate offset

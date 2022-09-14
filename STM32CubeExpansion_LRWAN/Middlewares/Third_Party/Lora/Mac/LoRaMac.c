@@ -2234,6 +2234,7 @@ static LoRaMacStatus_t ScheduleTx( void )
     {
         if( ValidatePayloadLength( LoRaMacTxPayloadLen, LoRaMacParams.ChannelsDatarate, MacCommandsBufferIndex ) == false )
         {
+            // PPRINTF("top\r\n");
             return LORAMAC_STATUS_LENGTH_ERROR;
         }
         RxWindow1Delay = LoRaMacParams.ReceiveDelay1 + RxWindow1Config.WindowOffset;
@@ -2719,6 +2720,7 @@ LoRaMacStatus_t LoRaMacInitialization( LoRaMacPrimitives_t *primitives, LoRaMacC
     getPhy.Attribute = PHY_DEF_TX_DR;
     phyParam = RegionGetPhyParam( LoRaMacRegion, &getPhy );
     LoRaMacParamsDefaults.ChannelsDatarate = phyParam.Value;
+    //PPRINTF("PHY_DEF_TX_DR %d\r\n", phyParam);
 
     getPhy.Attribute = PHY_MAX_RX_WINDOW;
     phyParam = RegionGetPhyParam( LoRaMacRegion, &getPhy );
@@ -2854,6 +2856,8 @@ LoRaMacStatus_t LoRaMacQueryTxPossible( uint8_t size, LoRaMacTxInfo_t* txInfo )
     }
     phyParam = RegionGetPhyParam( LoRaMacRegion, &getPhy );
     txInfo->CurrentPayloadSize = phyParam.Value;
+    //PPRINTF("%d\r\n",MacCommandsBufferIndex);
+    //PPRINTF("txInfo->CurrentPayloadSize = %d, fOptLen = %d \r\n", txInfo->CurrentPayloadSize,fOptLen);
 
     // Verify if the fOpts fit into the maximum payload
     if( txInfo->CurrentPayloadSize >= fOptLen )
@@ -2881,6 +2885,7 @@ LoRaMacStatus_t LoRaMacQueryTxPossible( uint8_t size, LoRaMacTxInfo_t* txInfo )
 			}
 			else
 			{
+        //PPRINTF("bottom\r\n");
         return LORAMAC_STATUS_LENGTH_ERROR;
 			}
     }
