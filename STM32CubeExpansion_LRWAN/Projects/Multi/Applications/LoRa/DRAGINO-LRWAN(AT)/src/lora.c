@@ -48,6 +48,7 @@
 #include "hw.h"
 #include "timeServer.h"
 #include "LoRaMac.h"
+#include "LoRaMacTest.h"
 #include "lora.h"
 #include "lora-test.h"
 #include "tiny_sscanf.h"
@@ -534,7 +535,7 @@ void fdr_config(void)
   #endif
 				
 	#if defined( REGION_AS923 )	|| defined( REGION_AU915 )
-		  dwelltime=1;
+		  dwelltime=0;
 	#endif
 
 	#if defined( REGION_EU868 )	
@@ -692,8 +693,10 @@ LoraErrorStatus LORA_send(lora_AppData_t* AppData, LoraConfirm_t IsTxConfirmed)
     {
       return LORA_ERROR;
     }
+		
+		LoRaMacStatus_t varr = LoRaMacQueryTxPossible( AppData->BuffSize, &txInfo );
     
-    if( LoRaMacQueryTxPossible( AppData->BuffSize, &txInfo ) != LORAMAC_STATUS_OK )
+    if( varr != LORAMAC_STATUS_OK )
     {
         // Send empty frame in order to flush MAC commands
         mcpsReq.Type = MCPS_UNCONFIRMED;
