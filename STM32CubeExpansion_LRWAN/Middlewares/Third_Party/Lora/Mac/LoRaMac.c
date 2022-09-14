@@ -2591,18 +2591,18 @@ LoRaMacStatus_t SendFrameOnChannel( uint8_t channel )
 		if(debug_flags==1)
 		{	
     TimerTime_t ts = TimerGetCurrentTime(); 
-    PPRINTF("\n\r[%lu]", ts);  
+    PPRINTF("\r\n[%lu]", ts);  
 		}
 		else
 		{
 			if(tips_flags==0)
 			{
-				PPRINTF("\n\rPlease use AT+DEBUG to see debug info\r\n");
+				PPRINTF("\r\nPlease use AT+DEBUG to see debug info\r\n");
 				tips_flags=1;
 			}	
 				PPRINTF("\r\n");			
 		}
-    PRINTF("***** UpLinkCounter= %u *****\n\r", UpLinkCounter );
+    PRINTF("***** UpLinkCounter= %u *****\r\n", UpLinkCounter );
 	
     RegionTxConfig( LoRaMacRegion, &txConfig, &txPower, &TxTimeOnAir );
 

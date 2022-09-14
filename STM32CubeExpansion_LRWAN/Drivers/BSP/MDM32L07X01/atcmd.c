@@ -176,7 +176,7 @@ uint16_t Len;
     break;
   }  
   default:
-    DBG_PRINTF("unknow group\n\r");
+    DBG_PRINTF("unknow group\r\n");
     break;
     
   } /*end switch (at_group)*/
@@ -364,7 +364,7 @@ char value_c;      /*for 8_C*/
   }
   default:  
   len = AT_VPRINTF("%s%s%s\r\n",AT_HEADER,CmdTab[Cmd],Marker);  
-        DBG_PRINTF ("format not yet supported \n\r");
+        DBG_PRINTF ("format not yet supported \r\n");
   break;
 } /*end switch(cmd)*/      
    return len;

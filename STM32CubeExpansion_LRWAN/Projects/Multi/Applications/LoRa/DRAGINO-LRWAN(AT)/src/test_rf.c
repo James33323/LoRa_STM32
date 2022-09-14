@@ -131,7 +131,7 @@ ATEerror_t TST_TxTone(const char *buf, unsigned bufSize)
   {
     TestState |= TX_TEST_TONE;
 
-    PRINTF("Tx Test\n\r");
+    PRINTF("Tx Test\r\n");
     
     SX1276SetModem( MODEM_FSK );
   
@@ -149,14 +149,14 @@ ATEerror_t TST_TxTone(const char *buf, unsigned bufSize)
       {
         Radio.Write( REG_PACONFIG, 0xFF );                             // PA_Boost 17 dBm
         Radio.Write( REG_PADAC, ( Radio.Read( REG_PADAC ) & RF_PADAC_20DBM_MASK ) | RF_PADAC_20DBM_ON );  // Enable 20dBm boost
-        PRINTF("force PA boost Output\n\r");
+        PRINTF("force PA boost Output\r\n");
         break;
       }
       case 17:
       {
         Radio.Write( REG_PACONFIG, 0xFF );                           // PA_Boost 17 dBm
         Radio.Write( REG_PADAC, ( Radio.Read( REG_PADAC ) & RF_PADAC_20DBM_MASK ) | RF_PADAC_20DBM_OFF );  // Disable 20dBm boost
-        PRINTF("force PA boost Output\n\r");
+        PRINTF("force PA boost Output\r\n");
         break;
       }
       case 14 :
@@ -220,7 +220,7 @@ ATEerror_t TST_RxTone(const char *buf, unsigned bufSize)
   if ( (TestState & RX_TEST_RSSI) != RX_TEST_RSSI )
   {
     TestState |= RX_TEST_RSSI;
-    PRINTF("Rx Test\n\r");  
+    PRINTF("Rx Test\r\n");  
     
      SX1276SetModem( MODEM_FSK );
   
@@ -235,11 +235,11 @@ ATEerror_t TST_RxTone(const char *buf, unsigned bufSize)
     if (loraParam.lna ==0 )
     {
       Radio.Write( REG_LR_LNA,0x20); //LNA off
-      PRINTF(">>> LNA is OFF\n\r");
+      PRINTF(">>> LNA is OFF\r\n");
     }
     else// if (lnaState==1)
     {
-      PRINTF(">>> LNA is ON\n\r");
+      PRINTF(">>> LNA is ON\r\n");
       Radio.Write( REG_LR_LNA,0x23); //LNA on
     }
 
@@ -355,12 +355,12 @@ ATEerror_t TST_stop( void )
   if ( (TestState & RX_TEST_RSSI) == RX_TEST_RSSI )
   {
     uint8_t rssiReg =  Radio.Read( REG_RSSIVALUE );
-    AT_PRINTF("RSSI=%d,%d dBm\n\r", -(rssiReg/2), rssiReg&0x1?5:0);
+    AT_PRINTF("RSSI=%d,%d dBm\r\n", -(rssiReg/2), rssiReg&0x1?5:0);
   }
   
   TestState = 0;
   
-  PRINTF("Test Stop\n\r");
+  PRINTF("Test Stop\r\n");
   /* Set the radio in standBy*/
   SX1276SetOpMode( RF_OPMODE_SLEEP );
   
@@ -419,11 +419,11 @@ ATEerror_t TST_RX_LoraStart( void )
     if (loraParam.lna ==0 )
     {
       Radio.Write( REG_LR_LNA,0x20); //LNA off
-      PRINTF(">>> LNA is OFF\n\r");
+      PRINTF(">>> LNA is OFF\r\n");
     }
     else// if (lnaState==1)
     {
-      PRINTF(">>> LNA is ON\n\r");
+      PRINTF(">>> LNA is ON\r\n");
       Radio.Write( REG_LR_LNA,0x23); //LNA on
     }
 

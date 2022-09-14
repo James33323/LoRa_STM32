@@ -532,7 +532,7 @@ static void LORA_HasJoined( void )
 	#endif
 	
 	#if defined(AT_Data_Send)     /*LoRa ST Module*/
-	AT_PRINTF("Please using AT+SEND or AT+SENDB to send you data!\n\r");
+	AT_PRINTF("Please using AT+SEND or AT+SENDB to send you data!\r\n");
 	#endif
 }
 
@@ -1376,7 +1376,7 @@ static void LORA_RxData( lora_AppData_t *AppData )
 	}	
 
 	AT_PRINTF("\r\n");		
-	AT_PRINTF("Receive data\n\r");
+	AT_PRINTF("Receive data\r\n");
 	if((AppData->BuffSize<=8)&&(rxpr_flags==1))
 	{		
 		AT_PRINTF("%d:",AppData->Port);		
@@ -1384,7 +1384,7 @@ static void LORA_RxData( lora_AppData_t *AppData )
 		{
 			AT_PRINTF("%02x ", AppData->Buff[i]);
 		}
-		AT_PRINTF("\n\r");
+		AT_PRINTF("\r\n");
 	}
 	else
 	{
@@ -1563,7 +1563,7 @@ static void StartUnconfirmedUplinkChangeToConfirmedUplinkTimeoutTimer(void)
 
 static void LORA_ConfirmClass ( DeviceClass_t Class )
 {
-  PRINTF("switch to class %c done\n\r","ABC"[Class] );
+  PRINTF("switch to class %c done\r\n","ABC"[Class] );
 
   /*Optionnal*/
   /*informs the server that switch has occurred ASAP*/

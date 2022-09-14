@@ -271,7 +271,7 @@ void HW_RTC_setMcuWakeUpTime( void )
       
     McuWakeUpTime = (int16_t) ((now-hit));
     McuWakeUpTimeCal += McuWakeUpTime;
-    DBG_PRINTF("Cal=%d, %d\n\r",McuWakeUpTimeCal, McuWakeUpTime);
+    DBG_PRINTF("Cal=%d, %d\r\n",McuWakeUpTimeCal, McuWakeUpTime);
   }
 }
 
@@ -576,7 +576,7 @@ static void HW_RTC_StartWakeUpAlarm( uint32_t timeoutValue )
   /* Debug Printf*/
   DBG( HW_RTC_GetCalendarValue( &RTC_DateStruct, &RTC_TimeStruct ); );
   DBG_PRINTF("it's %d:%d:%d:%d ", RTC_TimeStruct.Hours, RTC_TimeStruct.Minutes, RTC_TimeStruct.Seconds, ((PREDIV_S - RTC_TimeStruct.SubSeconds)*1000)>>N_PREDIV_S);
-  DBG_PRINTF("WU@ %d:%d:%d:%d\n\r", rtcAlarmHours, rtcAlarmMinutes, rtcAlarmSeconds, (rtcAlarmSubSeconds*1000)>>N_PREDIV_S );
+  DBG_PRINTF("WU@ %d:%d:%d:%d\r\n", rtcAlarmHours, rtcAlarmMinutes, rtcAlarmSeconds, (rtcAlarmSubSeconds*1000)>>N_PREDIV_S );
   
   DBG_GPIO_RST(GPIOB, GPIO_PIN_13);
 }

@@ -445,13 +445,13 @@ void LORA_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParam )
 	#if defined(LoRa_Sensor_Node) || defined(AT_Data_Send)
 	
 	#if defined(LoRa_Sensor_Node)
-	PRINTF("\n\rLSN50 Device\n\r");
+	PRINTF("\r\nLSN50 Device\r\n");
 	#else
-	PRINTF("\n\rLoRa ST Module\n\r");
+	PRINTF("\r\nLoRa ST Module\r\n");
 	#endif
 	
-	PRINTF("Image Version: "AT_VERSION_STRING"\n\r");
-	PRINTF("LoRaWan Stack: "AT_LoRaWan_VERSION_STRING"\n\r");	
+	PRINTF("Image Version: "AT_VERSION_STRING"\r\n");
+	PRINTF("LoRaWan Stack: "AT_LoRaWan_VERSION_STRING"\r\n");	
 	PRINTF("Frequency Band: ");
 	region_printf();
 	key_printf();
@@ -509,7 +509,7 @@ void LORA_Init (LoRaMainCallback_t *callbacks, LoRaParam_t* LoRaParam )
 	{
 		fdr_config();
 		EEPROM_program(DATA_EEPROM_BASE,Automatic_join_network,1);		
-    PRINTF("Please set the parameters or reset Device to apply change\n\r");				
+    PRINTF("Please set the parameters or reset Device to apply change\r\n");				
 	}
 	else if(*(__IO uint32_t *)DATA_EEPROM_BASE==0x12) //newfire or downlink FDR  
 	{
@@ -573,34 +573,34 @@ void region_printf(void)
 {
 #if defined( REGION_AS923 )
 	#ifdef AS923_2
-  PPRINTF("AS923_2\n\r");
+  PPRINTF("AS923_2\r\n");
 	#elif AS923_4
-	PPRINTF("AS923_4\n\r");
+	PPRINTF("AS923_4\r\n");
 	#else
-	PPRINTF("AS923\n\r");
+	PPRINTF("AS923\r\n");
 	#endif	
 #elif defined( REGION_AU915 )
-  PPRINTF("AU915\n\r");
+  PPRINTF("AU915\r\n");
 #elif defined( REGION_CN470 )
-  PPRINTF("CN470\n\r");
+  PPRINTF("CN470\r\n");
 #elif defined( REGION_CN779 )
-  PPRINTF("CN779\n\r");
+  PPRINTF("CN779\r\n");
 #elif defined( REGION_EU433 )
-  PPRINTF("EU433\n\r");
+  PPRINTF("EU433\r\n");
 #elif defined( REGION_IN865 )
-  PPRINTF("IN865\n\r");
+  PPRINTF("IN865\r\n");
 #elif defined( REGION_EU868 )
-  PPRINTF("EU868\n\r");
+  PPRINTF("EU868\r\n");
 #elif defined( REGION_KR920 )
-  PPRINTF("KR920\n\r");
+  PPRINTF("KR920\r\n");
 #elif defined( REGION_US915 )
-  PPRINTF("US915\n\r");
+  PPRINTF("US915\r\n");
 #elif defined( REGION_RU864 )
-  PPRINTF("RU864\n\r");
+  PPRINTF("RU864\r\n");
 #elif defined( REGION_KZ865 )
-  PPRINTF("KZ865\n\r");			
+  PPRINTF("KZ865\r\n");			
 #elif defined( REGION_MA869 )
-  PPRINTF("MA869\n\r");	
+  PPRINTF("MA869\r\n");	
 #else
     #error "Please define a region in the compiler options."
 #endif
@@ -608,16 +608,16 @@ void region_printf(void)
 
 void key_printf(void)
 {
-//  PPRINTF("If ABP enabled\n\r"); 
-  PPRINTF("DevEui= %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX8(lora_config.DevEui));
-//  PPRINTF("DevAdd=  %08X\n\r", lora_config.DevAddr) ;
-//  PPRINTF("NwkSKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX16(lora_config.NwkSKey));
-//  PPRINTF("AppSKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX16(lora_config.AppSKey));
+//  PPRINTF("If ABP enabled\r\n"); 
+  PPRINTF("DevEui= %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX8(lora_config.DevEui));
+//  PPRINTF("DevAdd=  %08X\r\n", lora_config.DevAddr) ;
+//  PPRINTF("NwkSKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX16(lora_config.NwkSKey));
+//  PPRINTF("AppSKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX16(lora_config.AppSKey));
 //			
-//  PPRINTF("If OTAA enabled\n\r"); 
-//  PPRINTF("DevEui= %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX8(lora_config.DevEui));
-//  PPRINTF("AppEui= %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX8(lora_config.AppEui));
-//  PPRINTF("AppKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\n\r", HEX16(lora_config.AppKey));	
+//  PPRINTF("If OTAA enabled\r\n"); 
+//  PPRINTF("DevEui= %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX8(lora_config.DevEui));
+//  PPRINTF("AppEui= %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX8(lora_config.AppEui));
+//  PPRINTF("AppKey= %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X %02X\r\n", HEX16(lora_config.AppKey));	
 }
 
 void LORA_Join( void)
@@ -1072,13 +1072,13 @@ void EEPROM_Store_Config(void)
   mib.Type = MIB_ADR;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	combination_data1|=mib.Param.AdrEnable<<24;
 	
 	mib.Type = MIB_CHANNELS_TX_POWER;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	combination_data1|=mib.Param.ChannelsTxPower<<16;
 	
   combination_data1|=lora_config.TxDatarate<<8;
@@ -1089,7 +1089,7 @@ void EEPROM_Store_Config(void)
 	 mib.Type = MIB_PUBLIC_NETWORK;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	combination_data2|=mib.Param.EnablePublicNetwork<<24;
 	
 	combination_data2|=lora_config.otaa<<16;
@@ -1097,7 +1097,7 @@ void EEPROM_Store_Config(void)
 	mib.Type = MIB_DEVICE_CLASS;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	combination_data2|=mib.Param.Class<<8;//0:CLASS A
 	
 	combination_data2|=lora_config.ReqAck;
@@ -1106,7 +1106,7 @@ void EEPROM_Store_Config(void)
 	mib.Type = MIB_RX2_CHANNEL;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.Rx2Channel.Frequency;
 	
 	if(RX2DR_setting_status==1)
@@ -1115,7 +1115,7 @@ void EEPROM_Store_Config(void)
 		mib.Type = MIB_RX2_CHANNEL;
 		status = LoRaMacMibGetRequestConfirm(&mib);
 		if(status!=LORAMAC_STATUS_OK)
-		{PRINTF("LORAMAC STATUS ERROR\n\r");}
+		{PRINTF("LORAMAC STATUS ERROR\r\n");}
 		s_config[config_count++]=mib.Param.Rx2Channel.Datarate;
   }
 	else
@@ -1128,31 +1128,31 @@ void EEPROM_Store_Config(void)
 	mib.Type = MIB_RECEIVE_DELAY_1;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.ReceiveDelay1;
 	
 	mib.Type = MIB_RECEIVE_DELAY_2;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.ReceiveDelay2;
 	
 	mib.Type = MIB_JOIN_ACCEPT_DELAY_1;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.JoinAcceptDelay1;
 	
 	mib.Type = MIB_JOIN_ACCEPT_DELAY_2;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.JoinAcceptDelay2;
 	
 	mib.Type = MIB_NET_ID;
   status = LoRaMacMibGetRequestConfirm(&mib);
 	if(status!=LORAMAC_STATUS_OK)
-	{PRINTF("LORAMAC STATUS ERROR\n\r");}
+	{PRINTF("LORAMAC STATUS ERROR\r\n");}
 	s_config[config_count++]=mib.Param.NetID;
 	
 	s_config[config_count++]=APP_TX_DUTYCYCLE;

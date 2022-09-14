@@ -114,7 +114,7 @@ void  FLASH_erase(uint32_t page_address)
     */
 		
     /* indicate error in Erase operation */
-    PRINTF("error in Erase operation\n\r");
+    PRINTF("error in Erase operation\r\n");
   }
 /* Lock the Flash to disable the flash control register access (recommended
      to protect the FLASH memory against possible unwanted operation) *********/
@@ -139,7 +139,7 @@ void  FLASH_program(uint32_t add, uint32_t *data, uint8_t count)
     else
     {
       /* Error occurred while writing data in Flash memory.*/
-      PRINTF("error in Write operation\n\r");
+      PRINTF("error in Write operation\r\n");
     }
   }
 
@@ -162,7 +162,7 @@ void  FLASH_program_on_addr(uint32_t addr,uint32_t data)
     else
     {
       /* Error occurred while writing data in Flash memory.*/
-      PRINTF("error in Write operation\n\r");
+      PRINTF("error in Write operation\r\n");
     }
 
   /* Lock the Flash to disable the flash control register access (recommended
@@ -186,7 +186,7 @@ void EEPROM_erase_one_address(uint32_t address)
 	if(HAL_FLASHEx_DATAEEPROM_Erase(address)!=HAL_OK)
 	{
 		RESTORE_PRIMASK();
-    PRINTF("error in EEPROM Erase operation\n\r");
+    PRINTF("error in EEPROM Erase operation\r\n");
 	}
 	
 	HAL_FLASHEx_DATAEEPROM_Lock();
@@ -210,7 +210,7 @@ void EEPROM_erase_lora_config(void)
 		if(HAL_FLASHEx_DATAEEPROM_Erase(address)!=HAL_OK)
 		{
 			RESTORE_PRIMASK();
-			PRINTF("error in EEPROM Erase operation\n\r");
+			PRINTF("error in EEPROM Erase operation\r\n");
 		}
 		address = address + 4;
   }

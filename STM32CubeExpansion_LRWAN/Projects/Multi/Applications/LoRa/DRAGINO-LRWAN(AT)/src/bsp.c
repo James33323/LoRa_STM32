@@ -504,7 +504,7 @@ void  BSP_sensor_Init( void  )
 	 if(HAL_I2C_Master_Transmit(&I2cHandle1,0x80,txdata1,1,1000) == HAL_OK)
 	 {
 		 flags=1;
-	   PRINTF("\n\rUse Sensor is STH2x\r\n");
+	   PRINTF("\r\nUse Sensor is STH2x\r\n");
 	 }
 	 
 	 if(flags==0)
@@ -524,7 +524,7 @@ void  BSP_sensor_Init( void  )
 	 if(HAL_I2C_Master_Transmit(&I2cHandle2,0x88,txdata2,2,1000) == HAL_OK)
 	 {
 		 flags=2;
-		 PRINTF("\n\rUse Sensor is STH3x\r\n");
+		 PRINTF("\r\nUse Sensor is STH3x\r\n");
 	 }	 
    }
 	 
@@ -538,13 +538,13 @@ void  BSP_sensor_Init( void  )
 		 if(luxtemp!=0)
 		 {
 			flags=3;
-			PRINTF("\n\rUse Sensor is BH1750\r\n");			 
+			PRINTF("\r\nUse Sensor is BH1750\r\n");			 
 		 }
 	 }
 	 
 	 if(flags==0)
 	 {
-		 PRINTF("\n\rNo I2C device detected\r\n");
+		 PRINTF("\r\nNo I2C device detected\r\n");
 	 }
 	 #endif
    }
@@ -559,7 +559,7 @@ void  BSP_sensor_Init( void  )
 	  if(waitbusy()<9999)
 	  {
      mode2_flag=1;					
-		 PRINTF("\n\rUse Sensor is LIDAR_Lite_v3HP\r\n");
+		 PRINTF("\r\nUse Sensor is LIDAR_Lite_v3HP\r\n");
 	  }		
 	  else
 	  {		 
@@ -570,7 +570,7 @@ void  BSP_sensor_Init( void  )
 	   {  
 			mode2_flag=2;	  
 			TIM3_Init();
-			PRINTF("\n\rUse Sensor is ultrasonic distance measurement\r\n");				 
+			PRINTF("\r\nUse Sensor is ultrasonic distance measurement\r\n");				 
 		 }	 
 		 GPIO_ULT_INPUT_DeInit();
 		 GPIO_ULT_OUTPUT_DeInit();
@@ -580,11 +580,11 @@ void  BSP_sensor_Init( void  )
 			if(check_deceive()==1)
 			{
 				mode2_flag=3;
-				PRINTF("\n\rUse Sensor is TF-series sensor\r\n");	
+				PRINTF("\r\nUse Sensor is TF-series sensor\r\n");	
 			}	
 			else
 			{	
-		    PRINTF("\n\rNo distance measurement device detected\r\n");					
+		    PRINTF("\r\nNo distance measurement device detected\r\n");					
 			}					
 		 }
 	  }
@@ -601,7 +601,7 @@ void  BSP_sensor_Init( void  )
 		WEIGHT_SCK_DeInit();
 		WEIGHT_DOUT_DeInit();				
 		HAL_GPIO_WritePin(PWR_OUT_PORT,PWR_OUT_PIN,GPIO_PIN_SET);//Disable 5v power supply		
-		PPRINTF("\n\rUse Sensor is HX711\r\n");			
+		PPRINTF("\r\nUse Sensor is HX711\r\n");			
 	}
 	else if((mode==7)||(mode==9))
 	{

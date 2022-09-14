@@ -253,7 +253,7 @@ ATEerror_t at_FDR(const char *param)
 {
 	EEPROM_erase_one_address(DATA_EEPROM_BASE);
 	EEPROM_erase_lora_config();
-	AT_PRINTF("OK\n\r");
+	AT_PRINTF("OK\r\n");
 	HAL_Delay(50);
 	NVIC_SystemReset();
   return AT_OK;
@@ -1157,7 +1157,7 @@ ATEerror_t at_RJTDC_set(const char *param)
 	}
 	else
 	{
-		PRINTF("The RJTDC range is 1 to 65535\n\r");
+		PRINTF("The RJTDC range is 1 to 65535\r\n");
 		return AT_PARAM_ERROR;	
 	}
 	
@@ -1192,7 +1192,7 @@ ATEerror_t at_RPL_set(const char *param)
 	}
 	else
 	{
-		PRINTF("The response level range is 0 to 5\n\r");
+		PRINTF("The response level range is 0 to 5\r\n");
 		return AT_PARAM_ERROR;	
 	}
 
@@ -1291,7 +1291,7 @@ ATEerror_t at_CFG_run(const char *param)
 		}	
 	}
 	
-	PPRINTF("\n\rStop Tx events,Please wait for all configurations to print\r\n");	
+	PPRINTF("\r\nStop Tx events,Please wait for all configurations to print\r\n");	
 	PPRINTF("\r\n");
 	TimerStop(&MacStateCheckTimer);
 	TimerStop(&TxDelayedTimer);
@@ -1308,14 +1308,14 @@ ATEerror_t at_CFG_run(const char *param)
 	{
 		if(mibReq.Param.IsNetworkJoined == 1)
 		{
-				PPRINTF("\n\rStart Tx events\r\n");
+				PPRINTF("\r\nStart Tx events\r\n");
 				TimerStart(&TxTimer);
 		}
 		else
 		{
 		  if(fdr_flags==0)
 	    {			
-				 PPRINTF("\n\rStart Tx events\r\n");				
+				 PPRINTF("\r\nStart Tx events\r\n");				
 				 TimerStart(&TxDelayedTimer);				 
 			}
 		}
@@ -1335,7 +1335,7 @@ ATEerror_t at_TDC_set(const char *param)
 	
 	if(txtimeout<6000)
 	{
-		PRINTF("TDC setting must be more than 6S\n\r");
+		PRINTF("TDC setting must be more than 6S\r\n");
 		APP_TX_DUTYCYCLE=6000;
 		return AT_PARAM_ERROR;
 	}
@@ -1453,7 +1453,7 @@ ATEerror_t at_CHE_get(const char *param)
 		  AT_PRINTF("%.1f ",fre1);
 		  fre1=fre1+l;
 	  }
-	  AT_PRINTF("\n\r");
+	  AT_PRINTF("\r\n");
   }
 	 else AT_PRINTF("Use default channel\r\n");
 	
@@ -1804,7 +1804,7 @@ ATEerror_t at_downlink_detect_set(const char *param)
 	}
 	else
 	{
-		PRINTF("The timeout range is 1 to 65535\n\r");
+		PRINTF("The timeout range is 1 to 65535\r\n");
 		return AT_PARAM_ERROR;	
 	}
 	
