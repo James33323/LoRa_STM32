@@ -78,7 +78,7 @@ Maintainer: Miguel Luis and Gregory Cristian
  * @note
  * @retval None
  */
-#define FLASH_USER_START_ADDR_KEY      (FLASH_BASE + FLASH_PAGE_SIZE * 802)
+#define FLASH_USER_START_ADDR_KEY      (FLASH_BASE + FLASH_PAGE_SIZE * 1524)
 
 #define EEPROM_USER_START_ADDR_KEY     (DATA_EEPROM_BASE+0x04)
 #define EEPROM_USER_Firmware_FLAGS     (DATA_EEPROM_BASE+0x04*22)
