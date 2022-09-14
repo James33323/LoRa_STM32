@@ -81,7 +81,7 @@ typedef struct{
 
 	float temp3;//DS18B20-3
 	
-	float oil;  //oil float
+	float oil;  //oil float // Default ADC output (ADC0??)
 
 	float ADC_1; //ADC1
 	
@@ -100,6 +100,14 @@ typedef struct{
 	int32_t Weight;
 
   /**more may be added*/
+	
+	uint16_t PV_Voltage;
+	uint16_t PV_Current;
+	
+	uint16_t RH, AMB_TEMP;
+	
+	
+	
 } sensor_t;
 
 typedef struct{

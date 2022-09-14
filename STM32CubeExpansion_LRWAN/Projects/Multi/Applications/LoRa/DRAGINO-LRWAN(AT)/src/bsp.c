@@ -68,6 +68,8 @@
 #include "iwdg.h"
 #include "bh1750.h"
 #include "tfsensor.h"
+#include "INA219.h"
+#include "dht22.h"
 #endif
 /* Private macro -------------------------------------------------------------*/
 /* Private variables ---------------------------------------------------------*/
@@ -94,6 +96,7 @@ extern float sht31_tem,sht31_hum;
 extern I2C_HandleTypeDef I2cHandle1;
 extern I2C_HandleTypeDef I2cHandle2;
 extern I2C_HandleTypeDef I2cHandle3;
+extern I2C_HandleTypeDef I2cHandle4;
 tfsensor_reading_t reading_t;
 #endif
 
@@ -107,6 +110,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
  	#if defined(LoRa_Sensor_Node)
 
 	HW_GetBatteryLevel( );	
+	// COUNT type measurements
 	if(message==1)
 	{
 		PPRINTF("\r\n");
@@ -125,7 +129,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 		{
 			PPRINTF("PB14_count1:%u\r\n",COUNT);
 			PPRINTF("PB15_count2:%u\r\n",COUNT2);
-			PPRINTF("PA4_status:%d\r\n",HAL_GPIO_ReadPin(GPIO_EXTI4_PORT,GPIO_EXTI4_PIN));
+			//PPRINTF("PA4_status:%d\r\n",HAL_GPIO_ReadPin(GPIO_EXTI4_PORT,GPIO_EXTI4_PIN));
 		}
 		else
 		{
@@ -135,31 +139,16 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 	
   IWDG_Refresh();		
 	//+3.3V power sensors	
-	if(mode!=3)
-	{
-		sensor_data->temp1=DS18B20_GetTemp_SkipRom(1);
-		if(message==1)
-		{
-			if((sensor_data->temp1>=-55)&&(sensor_data->temp1<=125))
-			{
-				PPRINTF("DS18B20_temp1:%.1f\r\n",sensor_data->temp1);
-			}
-			else
-			{
-				PPRINTF("DS18B20_temp1:null\r\n");
-			}
-		}
-	}
 	
-  if((mode==1)||(mode==3))
+  if((mode==1)||(mode==3)) //I2C mediated SHT20 temp/humitidy sensor
   {		
 		#ifdef USE_SHT
-		if(flags==0)
+		if(flags==0)	// No sensor found
 		{
 			sensor_data->temp_sht=6553.5;
 			sensor_data->hum_sht=6553.5;
 		} 
-		else if(flags==1)
+		else if(flags==1) // SHT20 I2C sensor
 		{
 			float temp2,hum1;
 			HAL_I2C_MspInit(&I2cHandle1);
@@ -172,7 +161,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 				PPRINTF("SHT2x_temp:%.1f,SHT2x_hum:%.1f\r\n",sensor_data->temp_sht,sensor_data->hum_sht);
 			}
 		}
-		else if(flags==2)
+		else if(flags==2) // SHT21 I2C sensor
 		{			
 			HAL_I2C_MspInit(&I2cHandle2);			
 			tran_SHT31data();		
@@ -183,7 +172,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 				PPRINTF("SHT3x_temp:%.1f,SHT3x_hum:%.1f\r\n",sensor_data->temp_sht,sensor_data->hum_sht);
 			}
 		}
-		else if(flags==3)
+		else if(flags==3) // Bit bangged I2C ???
 		{		
 			bh1750flags=1;		
 			I2C_IoInit();
@@ -196,7 +185,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 		}		
 		#endif
 	}
-  else if((mode==4)||(mode==9))
+  else if((mode==4)) //Second and Third DS18B20 temp probe
   {
 		sensor_data->temp2=DS18B20_GetTemp_SkipRom(2);
 		if(message==1)
@@ -222,7 +211,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 				PPRINTF("DS18B20_temp3:null\r\n");
 			}
 		}
-	}		
+	}
 	
   //+5V power sensors	
 	uint16_t adcdata[3][6];
@@ -240,7 +229,78 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 		}
 	}
 	
-	if((mode!=3)&&(mode!=8)&&(mode!=9))
+	if(mode==9) //INA219 readings
+	{
+		BSP_INA219_Init();
+		HAL_I2C_MspInit(&I2cHandle4);	
+		INA219_Init();
+		HAL_Delay(10);
+		sensor_data->PV_Voltage = INA219_read_bus_voltage();
+		sensor_data->PV_Current = INA219_read_bus_current();
+		INA219_DeInit();
+		HAL_I2C_MspDeInit(&I2cHandle4);
+		
+		GPIO_InitTypeDef GPIO_InitStruct={0};
+
+		GPIO_InitStruct.Mode = GPIO_MODE_ANALOG;
+		GPIO_InitStruct.Pull = GPIO_NOPULL;
+		
+		GPIO_InitStruct.Pin = I2Cx_SCL_PIN;
+		HAL_GPIO_Init(I2Cx_SCL_GPIO_PORT, &GPIO_InitStruct);
+		
+		GPIO_InitStruct.Pin = I2Cx_SDA_PIN;
+		HAL_GPIO_Init(I2Cx_SDA_GPIO_PORT, &GPIO_InitStruct);
+
+	}
+	
+	IWDG_Refresh();
+	
+	if(mode!=3) //DS18B20 temp probe
+	{
+		sensor_data->temp1=DS18B20_GetTemp_SkipRom(1);
+		//if(message==1)
+		{
+			if((sensor_data->temp1>=-55)&&(sensor_data->temp1<=125))
+			{
+				PPRINTF("DS18B20_temp1:%.1f\r\n",sensor_data->temp1);
+			}
+			else
+			{
+				PPRINTF("DS18B20_temp1:null\r\n");
+			}
+		}
+	}
+	
+	IWDG_Refresh();
+	
+	if(mode==9)
+	{
+		uint8_t Rh_byte1, Rh_byte2, Temp_byte1, Temp_byte2, WTemp_byte1, WTemp_byte2;
+		uint16_t SUM, WTEMP;
+
+		int Temperature = 0;
+		int Humidity = 0;
+		int WTemperature = 0;
+		uint8_t Presence = 0;
+
+		DHT22_Start();
+		Presence = DHT22_Check_Response();
+		Rh_byte1 = DHT22_Read ();
+		Rh_byte2 = DHT22_Read ();
+		Temp_byte1 = DHT22_Read();
+		Temp_byte2 = DHT22_Read();
+		SUM = DHT22_Read();
+
+		sensor_data->AMB_TEMP = ((Temp_byte1<<8)|Temp_byte2);
+		sensor_data->RH = ((Rh_byte1<<8)|Rh_byte2);
+		
+		PPRINTF("TEMP hex:%x dec:%.1f\r\nRH hex:%x dec:%.1f\r\n", sensor_data->AMB_TEMP, sensor_data->AMB_TEMP/10.0, sensor_data->RH, sensor_data->RH/10.0);
+
+		Temperature = (int) (sensor_data->AMB_TEMP);
+		Humidity = (int) (sensor_data->RH);
+	}
+	
+	if((mode!=3)&&(mode!=8)) //ADC 1
 	{
 		BSP_oil_float_Init();
 		for(uint8_t q=0;q<6;q++)
@@ -251,13 +311,13 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 		HAL_GPIO_WritePin(OIL_CONTROL_PORT,OIL_CONTROL_PIN,GPIO_PIN_SET);
 		AD_code1=ADC_Average(adcdata[0]);
 		sensor_data->oil=AD_code1*batteryLevel_mV/4095;
-		if(message==1)
-		{				
+//		if(message==1)
+//		{				
 			PPRINTF("ADC_PA0:%.3f V\r\n",(sensor_data->oil/1000.0));
-		}
+//		}
 	}
 	
-	if(mode==2)
+	if(mode==2) //LiDAR
 	{
 	  if(mode2_flag==1)
 		{
@@ -299,7 +359,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 			sensor_data->distance_signal_strengh = 65535;			
 		}			 
 	} 
-	else if((mode==3)||(mode==8))
+	else if((mode==3)||(mode==8)) //ADC 2 and 3
 	{	
 		 BSP_oil_float_Init();
 		 for(uint8_t w=0;w<6;w++)
@@ -336,7 +396,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 			 PPRINTF("ADC_PA4:%.3f V\r\n",(sensor_data->ADC_2/1000.0));
 		 }
 	}	 
-	else if(mode==5)
+	else if(mode==5) //weight
   {
 		WEIGHT_SCK_Init();
 		WEIGHT_DOUT_Init();		 
@@ -349,7 +409,7 @@ void BSP_sensor_Read( sensor_t *sensor_data, uint8_t message)
 		}
 	}	
 
-	GPIO_INPUT_IoInit();
+	GPIO_INPUT_IoInit(); //Digital input 1
   HAL_Delay(5);	
 	sensor_data->in1=HAL_GPIO_ReadPin(GPIO_INPUT_PORT,GPIO_INPUT_PIN1);
 	GPIO_INPUT_DeIoInit();
@@ -428,6 +488,7 @@ void Device_status( device_t *device_data)
 
 void HAL_I2C_MspInit(I2C_HandleTypeDef *hi2c)
 {
+	//PPRINTF("Init I2C %x \r\n", hi2c);
   GPIO_InitTypeDef  GPIO_InitStruct;
   RCC_PeriphCLKInitTypeDef  RCC_PeriphCLKInitStruct;
   
@@ -484,6 +545,11 @@ void  BSP_sensor_Init( void  )
   #if defined(LoRa_Sensor_Node)
 	
 	 pwr_control_IoInit();		
+	
+	//PPRINTF("I2cHandle1 = %x \r\n",&I2cHandle1);
+	//PPRINTF("I2cHandle2 = %x \r\n",&I2cHandle2);
+	//PPRINTF("I2cHandle3 = %x \r\n",&I2cHandle3);
+	//PPRINTF("I2cHandle4 = %x \r\n",&I2cHandle4);
 	
 	if((mode==1)||(mode==3))
 	{	 
@@ -610,6 +676,8 @@ void  BSP_sensor_Init( void  )
 		if(mode==9)
 		{
 			BSP_oil_float_DeInit();
+			BSP_INA219_Init();
+			//PPRINTF("I2C init\r\n");
 		}
 	}
 	

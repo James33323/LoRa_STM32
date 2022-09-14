@@ -76,7 +76,7 @@ uint32_t ServerSetTDC;
  * LoRaWAN Default data Rate Data Rate
  * @note Please note that LORAWAN_DEFAULT_DATA_RATE is used only when ADR is disabled 
  */
-#define LORAWAN_DEFAULT_DATA_RATE DR_0
+#define LORAWAN_DEFAULT_DATA_RATE DR_4
 /*!
  * LoRaWAN application port is 0 to 255
  * @note do not use 256. It is reserved for certification
@@ -336,9 +336,10 @@ int main( void )
 			{
 				NVIC_SystemReset();
 			}		
-			
+			//AT_PRINTF("uplink_data_status = %d\r\nLoRaMacState = 0x%X \r\n");
 			if((uplink_data_status==1)&&(( LoRaMacState & 0x00000001 ) != 0x00000001)&&(( LoRaMacState & 0x00000010 ) != 0x00000010))
 			{
+				AT_PRINTF("Sending in main loop \r\n");
 				Send();
 				uplink_data_status=0;
 			}	
@@ -545,6 +546,8 @@ static void Send( void )
     /*Not joined, try again later*/
     return;
   }
+	
+	//AT_PRINTF("Is there data %d \r\n",is_there_data);
 	
 	BSP_sensor_Read( &sensor_data,message_flags );
 	message_flags=0;
@@ -797,33 +800,42 @@ static void Send( void )
 
 	else if(mode==9)
 	{	
-		AppData.Buff[i++] =(batteryLevel_mV>>8);       //level of battery in mV
-		AppData.Buff[i++] =batteryLevel_mV & 0xFF;
-	
-		AppData.Buff[i++]=(int)(sensor_data.temp1*10)>>8;     //DS18B20
-		AppData.Buff[i++]=(int)(sensor_data.temp1*10);
-
-		AppData.Buff[i++]=(int)(sensor_data.temp2*10)>>8;     //PA9-DS18B20
-		AppData.Buff[i++]=(int)(sensor_data.temp2*10);
+		PPRINTF("mode 9\r\n");	
+		PPRINTF("COUNT:  %d\r\n",COUNT);	
+		PPRINTF("COUNT2: %d\r\n",COUNT2);	
+		AppData.Buff[i++] = (batteryLevel_mV>>8);       //level of battery in mV
+		AppData.Buff[i++] = batteryLevel_mV & 0xFF;
 		
-		if(exit3_temp==0)
-		{
-			switch_status3=HAL_GPIO_ReadPin(GPIO_EXTI4_PORT,GPIO_EXTI4_PIN);		
-		}	
-		AppData.Buff[i++]=(switch_status3<<7)|(sensor_data.in1<<1)|0x20|(exit3_temp&0x01);		
+		AppData.Buff[i++] = (sensor_data.PV_Voltage>>8);
+		AppData.Buff[i++] = (sensor_data.PV_Voltage & 0xFF);
 		
-		AppData.Buff[i++]=(int)(sensor_data.temp3*10)>>8;     //PA10-DS18B20
-		AppData.Buff[i++]=(int)(sensor_data.temp3*10);
+		AppData.Buff[i++] = (sensor_data.PV_Current >> 8);
+		AppData.Buff[i++] = (sensor_data.PV_Current & 0xFF);
 		
 		AppData.Buff[i++] = (uint8_t)((COUNT)>>24);
 		AppData.Buff[i++] =	(uint8_t)((COUNT)>>16);	
 		AppData.Buff[i++] = (uint8_t)((COUNT)>>8);
-		AppData.Buff[i++] =	(uint8_t)(COUNT); 	
+		AppData.Buff[i++] =	(uint8_t)(COUNT);
 	
 		AppData.Buff[i++] = (uint8_t)((COUNT2)>>24);
 		AppData.Buff[i++] =	(uint8_t)((COUNT2)>>16);	
 		AppData.Buff[i++] = (uint8_t)((COUNT2)>>8);
-		AppData.Buff[i++] =	(uint8_t)(COUNT2); 		
+		AppData.Buff[i++] =	(uint8_t)(COUNT2);
+		
+		AppData.Buff[i++] = (int)(sensor_data.oil)>>8; //ADC output (weather vane)
+		AppData.Buff[i++] = (int) sensor_data.oil;		
+		
+		// temp & hum sensor here
+		
+		AppData.Buff[i++] = (sensor_data.AMB_TEMP>>8);
+		AppData.Buff[i++] = (sensor_data.AMB_TEMP & 0xFF);
+		
+		AppData.Buff[i++] = (sensor_data.RH>>8);
+		AppData.Buff[i++] = (sensor_data.RH & 0xFF);
+		
+		AppData.Buff[i++]=(int)(sensor_data.temp1*10)>>8;     //DS18B20
+		AppData.Buff[i++]=(int)(sensor_data.temp1*10);
+		
 	}
 	
 	if(exit_temp==1)
@@ -849,11 +861,15 @@ static void Send( void )
 	
   if(unconfirmed_uplink_change_to_confirmed_uplink_status==1)
   {
+		PPRINTF("LORAWAN_CONFIRMED_MSG\r\n");	
 		LORA_send( &AppData, LORAWAN_CONFIRMED_MSG);
 	}
 	else
 	{	
-		LORA_send( &AppData, lora_config_reqack_get());
+		int varr;
+		LORA_send( &AppData, varr=lora_config_reqack_get());
+		PPRINTF("lora_config_reqack_get() = %d \r\n", varr);	
+		PPRINTF("AppData \r\nlen = %d, port = %d", AppData.BuffSize, AppData.Port);	
 	}
 	#endif	
 }
@@ -870,6 +886,8 @@ static void Send_device_status(void)
     /*Not joined, try again later*/
     return;
   }
+	
+	PPRINTF("Sending Status\r\n");	
 	
 	Device_status(&device_data);
 	
@@ -1576,6 +1594,7 @@ void send_exti(void)
 {
 	if(exti_flag==1)
 	{
+		//PPRINTF("SEND_EXTI_1\r\n");	
 		 if((mode!=6)&&(mode!=9))
 		 {
 			 if((( LoRaMacState & 0x00000001 ) != 0x00000001) &&(( LoRaMacState & 0x00000010 ) != 0x00000010))
@@ -1595,6 +1614,7 @@ void send_exti(void)
 	
 	if(exti_flag2==1)
 	{
+		//PPRINTF("SEND_EXTI_2\r\n");	
 		if(mode!=9)
 		{
 			if((( LoRaMacState & 0x00000001 ) != 0x00000001) && (( LoRaMacState & 0x00000010 ) != 0x00000010))
@@ -1615,6 +1635,7 @@ void send_exti(void)
 	
 	if(exti_flag3==1)
 	{
+		//PPRINTF("SEND_EXTI_3\r\n");	
 		if((( LoRaMacState & 0x00000001 ) != 0x00000001) && (( LoRaMacState & 0x00000010 ) != 0x00000010))
 	  {
 		  uplink_data_status=1;

@@ -548,7 +548,7 @@ void fdr_config(void)
 			LoRaMacMibSetRequestConfirm( &mibReq );
 	#endif	
 				
-	mode=1;			
+	mode=9;			
 	inmode=2;		
 	inmode2=2;		
 	inmode3=2;					
@@ -694,11 +694,13 @@ LoraErrorStatus LORA_send(lora_AppData_t* AppData, LoraConfirm_t IsTxConfirmed)
       return LORA_ERROR;
     }
 		
-		LoRaMacStatus_t varr = LoRaMacQueryTxPossible( AppData->BuffSize, &txInfo );
+    LoRaMacStatus_t varr = LoRaMacQueryTxPossible( AppData->BuffSize, &txInfo );
     
     if( varr != LORAMAC_STATUS_OK )
     {
         // Send empty frame in order to flush MAC commands
+        PPRINTF("EMPTY FRAME SENT, CAUSE = %d\r\n", varr);	
+        PPRINTF("LORAMAC_STATUS_LENGTH_ERROR is %d",LORAMAC_STATUS_LENGTH_ERROR);
         mcpsReq.Type = MCPS_UNCONFIRMED;
         mcpsReq.Req.Unconfirmed.fBuffer = NULL;
         mcpsReq.Req.Unconfirmed.fBufferSize = 0;
